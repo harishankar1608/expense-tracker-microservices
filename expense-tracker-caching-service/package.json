@@ -1,0 +1,20 @@
+{
+  "name": "expense-tracker-caching-service",
+  "version": "1.0.0",
+  "description": "This service receives events from kafka and cache in redis",
+  "license": "ISC",
+  "author": "Hari Shankar N",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.4",
+    "kafkajs": "^2.2.4",
+    "nodemon": "^3.1.11",
+    "redis": "^5.10.0"
+  }
+}
