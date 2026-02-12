@@ -31,7 +31,7 @@ on:
     branches: ["dev"]
 
 env:
-  AWS_ROLE: ${{secrets.AWS_ECS_ROLE}}
+  AWS_ECS_ROLE: ${{secrets.AWS_ECS_ROLE}}
   AWS_REGION: ap-south-1 # set this to your preferred AWS region, e.g. us-west-1
   AWS_ECS_CLUSTER: expense_tracker
 
@@ -46,9 +46,7 @@ jobs:
     env:
       MESSAGE_SERVICE_AWS_ECS_TASK_DEFINITION: ${{secrets.MESSAGE_SERVICE_AWS_ECS_TASK_DEFINITION}} # set this to the path to your Amazon ECS task definition
       MESSAGE_SERVICE_AWS_ECR_REPOSITORY: expense-tracker-messages-service # set this to your Amazon ECR repository name
-      MESSAGE_SERVICE_AWS_ECS_SERVICE:
-        expense_tracker_messages_service_td-service-2ikafjaf # set this to your Amazon ECS service name
-        # file, e.g. .aws/task-definition.json
+      MESSAGE_SERVICE_AWS_ECS_SERVICE: expense_tracker_messages_service_td-service-2ikafjaf # set this to your Amazon ECS service name
       MESSAGE_SERVICE_CONTAINER_NAME: expense_tracker_messages_service_cont # set this to the name of the container in the
 
     steps:
@@ -61,7 +59,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          role-to-assume:
+          role-to-assume: ${{env.AWS_ECS_ROLE}}
           aws-region: ${{env.AWS_REGION}}
 
       - name: Additional steps
@@ -121,7 +119,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          role-to-assume: ${{env.AWS_ROLE}}
+          role-to-assume: ${{env.AWS_ECS_ROLE}}
           aws-region: ${{env.AWS_REGION}}
 
       - name: Additional steps
