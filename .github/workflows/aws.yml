@@ -37,6 +37,7 @@ env:
 
 permissions:
   id-token: write
+  deployments: write
 
 jobs:
   deploy_message_service:
@@ -53,7 +54,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          token: ${{secrets.GITHUB_TOKEN}}
+          token: ${{secrets.SECRET_TOKEN_GITHUB}}
           # token: ${{secrets.SECRET_TOKEN_GITHUB}}
 
       - name: Configure AWS credentials
