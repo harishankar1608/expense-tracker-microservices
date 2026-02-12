@@ -35,8 +35,8 @@ env:
   AWS_REGION: ap-south-1 # set this to your preferred AWS region, e.g. us-west-1
   AWS_ECS_CLUSTER: expense_tracker
 
-  permissions:
-    id-token: write
+permissions:
+  id-token: write
 
 jobs:
   deploy_message_service:
