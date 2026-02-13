@@ -4,10 +4,8 @@ import websocketConnection from "./controller/websocket/users.js";
 
 const kafka = new Kafka({
   clientId: "message-app",
-  brokers: ["localhost:9092"],
+  brokers: [`${process.env.KAFKA_PORT}`],
 });
-
-console.log(`deliver-message-consumer-${os.hostname()}`);
 
 const consumer = kafka.consumer({
   groupId: `deliver-message-consumer-${os.hostname()}`,
