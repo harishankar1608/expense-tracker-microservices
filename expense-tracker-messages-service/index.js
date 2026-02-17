@@ -3,10 +3,21 @@ import websocketConnections from "./controller/websocket/users.js";
 import { decodeAndValidateUser } from "./utils/validate.js";
 import dotenv from "dotenv";
 import { connectKafka } from "./kafka.js";
+import express from "express";
+
+const app = express();
+
+app.get("/", (req, res) => {
+  return res.status(200).send({ message: "Websocket server is running" });
+});
+
+const server = app.listen(process.env.PORT, () =>
+  console.log(`Server is running on port ${process.env.PORT}`)
+);
 
 dotenv.config();
 
-const wss = new WebSocketServer({ port: process.env.PORT || 8000 });
+const wss = new WebSocketServer({ server, path: "/messages" });
 
 wss.on("connection", async (ws, req) => {
   const headerCookies = req.headers.cookie || "";
