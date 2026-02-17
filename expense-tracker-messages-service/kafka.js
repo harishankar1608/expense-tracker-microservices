@@ -13,11 +13,12 @@ const consumer = kafka.consumer({
 
 export const connectKafka = async () => {
   await consumer.connect();
-  await consumer.subscribe({ topics: ["websocket_messages"] });
-  await consumer.run({ eachMessage: handleKafkaEvent });
+  console.log(process.env.KAFKA_PORT, "kafka port");
   console.log(
     console.log(consumer, "CONSUMER OBJECT AFTER CONNECTION ATTEMPT")
   );
+  await consumer.subscribe({ topics: ["websocket_messages"] });
+  await consumer.run({ eachMessage: handleKafkaEvent });
 };
 
 const handleSendMessage = (eventData) => {
@@ -79,6 +80,6 @@ const handleKafkaEvent = async ({ topic, message: kafkaMessage }) => {
       handleNewConversation(eventJson.data);
       break;
     default:
-      console.log("Unknown topic", topic);
+      console.log("Unknown topic");
   }
 };

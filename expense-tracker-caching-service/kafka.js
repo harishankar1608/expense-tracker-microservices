@@ -3,9 +3,10 @@ import os from "os";
 import redis from "./redis.js";
 import { REDIS_CACHE_KEYS } from "./enum/redis.js";
 
+console.log(`${process.env.KAFKA_PORT}`, "kafka port");
 const kafka = new Kafka({
   clientId: "redis-app",
-  brokers: ["localhost:9092"],
+  brokers: [`${process.env.KAFKA_PORT}`],
 });
 
 const consumer = kafka.consumer({
