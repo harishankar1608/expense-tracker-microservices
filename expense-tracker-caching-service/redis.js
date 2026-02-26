@@ -9,12 +9,9 @@ const connect = async () => {
   await client
     .on("error", (err) => console.log("Redis Client Error", err))
     .connect();
-
-  console.log(client, "Client");
 };
 
 const add = async (key, value) => {
-  console.log(key, value);
   return client.set(key, JSON.stringify(value));
 };
 
