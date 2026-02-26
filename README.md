@@ -5,6 +5,7 @@ This repository contains all the microservices required for expense tracker appl
 Built With
 
 - [Node.js][nodejs-url]
+- Websocket ([ws][websocket-ws-url])
 - [PostgreSQL][postgresql-url]
 - [Sequelize][sequelize-url]
 - [Apache Kafka][apache-kafka-url]
@@ -50,6 +51,7 @@ Get Started With Caching Microservice
   ```
 
 [expense-tracker-backend]: https://github.com/harishankar1608/expense-tracker-backend
+[websocket-ws-url]: https://www.npmjs.com/package/ws
 [nodejs-url]: https://nodejs.org/en
 [postgresql-url]: https://www.postgresql.org/
 [apache-kafka-url]: https://kafka.apache.org/
