@@ -1,25 +1,12 @@
-import { Kafka } from "kafkajs";
-import os from "os";
+import { createClient } from "redis";
+import dotenv from "dotenv";
 import websocketConnection from "./controller/websocket/users.js";
 
-const kafka = new Kafka({
-  clientId: "message-app",
-  brokers: [`${process.env.KAFKA_PORT}`],
-});
+dotenv.config();
 
-const consumer = kafka.consumer({
-  groupId: `deliver-message-consumer-${os.hostname()}`,
-});
+const client = createClient({ url: process.env.REDIS_CONNECTION_URL });
 
-export const connectKafka = async () => {
-  await consumer.connect();
-  console.log(process.env.KAFKA_PORT, "kafka port");
-  console.log(
-    console.log(consumer, "CONSUMER OBJECT AFTER CONNECTION ATTEMPT")
-  );
-  await consumer.subscribe({ topics: ["websocket_messages"] });
-  await consumer.run({ eachMessage: handleKafkaEvent });
-};
+const userClient = createClient({ url: process.env.REDIS_CONNECTION_URL });
 
 const handleSendMessage = (eventData) => {
   const { message, participants } = eventData;
@@ -69,17 +56,41 @@ const handleNewConversation = (eventData) => {
   websocketConnection.sendMessageToUser(Number(to), messageJson);
 };
 
-const handleKafkaEvent = async ({ topic, message: kafkaMessage }) => {
-  const eventJson = JSON.parse(kafkaMessage.value.toString());
+export const connectRedis = async () => {
+  await client
+    .on("error", (error) => {
+      console.log(error, "Error");
+      console.log("Error while connecting to redis");
+    })
+    .connect();
+  await userClient
+    .on("error", (error) => {
+      console.log(error, "Error");
+      console.log("Error while connecting to redis userClient");
+    })
+    .connect();
 
-  switch (eventJson.requestType) {
-    case "deliver_message":
-      handleSendMessage(eventJson.data);
-      break;
-    case "new_conversation":
-      handleNewConversation(eventJson.data);
-      break;
-    default:
-      console.log("Unknown topic");
-  }
+  await client.subscribe("websocket_messages", (kafkaMessage) => {
+    console.log(kafkaMessage, "Kafka Message");
+    const eventJson = JSON.parse(kafkaMessage.toString());
+
+    switch (eventJson.requestType) {
+      case "deliver_message":
+        handleSendMessage(eventJson.data);
+        break;
+      case "new_conversation":
+        handleNewConversation(eventJson.data);
+        break;
+      default:
+        console.log("Unknown topic");
+    }
+  });
+};
+
+export const addUserInRedis = (key, value) => {
+  return userClient.setNX(key, value);
+};
+
+export const deleteUserInRedis = (key, uuid) => {
+  return userClient.delEx(key, { condition: "IFEQ", matchValue: uuid });
 };

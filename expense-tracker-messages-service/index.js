@@ -2,8 +2,8 @@ import { WebSocketServer } from "ws";
 import websocketConnections from "./controller/websocket/users.js";
 import { decodeAndValidateUser } from "./utils/validate.js";
 import dotenv from "dotenv";
-import { connectKafka } from "./kafka.js";
 import express from "express";
+import { connectRedis } from "./redis.js";
 
 const app = express();
 
@@ -41,11 +41,13 @@ wss.on("connection", async (ws, req) => {
     return;
   }
 
-  websocketConnections.addUser(isValid.userId, ws);
+  const uuid = crypto.randomUUID();
+
+  websocketConnections.addUser(isValid.userId, ws, uuid);
 
   ws.on("close", () => {
-    websocketConnections.removeUser(isValid.userId);
+    websocketConnections.removeUser(isValid.userId, uuid);
   });
 });
 
-connectKafka();
+connectRedis();
