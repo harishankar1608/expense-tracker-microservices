@@ -28,7 +28,7 @@ name: Deploy to Amazon ECS
 
 on:
   push:
-    branches: ["dev"]
+    branches: ["dev-disabled"] # switch the branch to desired branch name :)
 
 env:
   AWS_ECS_ROLE: ${{secrets.AWS_ECS_ROLE}}
