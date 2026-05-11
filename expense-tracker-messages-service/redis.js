@@ -88,7 +88,10 @@ export const connectRedis = async () => {
 };
 
 export const addUserInRedis = (key, value) => {
-  return userClient.setNX(key, value);
+  return userClient.set(key, value, {
+    condition: "NX",
+    expiration: { type: "EX", value: 600 },
+  });
 };
 
 export const deleteUserInRedis = (key, uuid) => {
